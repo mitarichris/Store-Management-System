@@ -98,7 +98,10 @@ class SalesHistoryController extends Controller
         }
 
         // ── Available years ────────────────────────────────────────────────
-        $availableYears = Sale::selectRaw("strftime('%Y', created_at) as year")
+        $yearExpr = DB::getDriverName() === 'sqlite'
+            ? "strftime('%Y', created_at)"
+            : "DATE_FORMAT(created_at, '%Y')";
+        $availableYears = Sale::selectRaw("$yearExpr as year")
             ->groupBy('year')->orderByDesc('year')->pluck('year');
 
         if ($availableYears->isEmpty()) {

@@ -195,8 +195,11 @@ class AccountingController extends Controller
         ];
 
         // Fix: pass as $availableYears to match the view variable name
+        $yearExpr = DB::getDriverName() === 'sqlite'
+            ? "strftime('%Y', transaction_date)"
+            : "DATE_FORMAT(transaction_date, '%Y')";
         $availableYears = Transaction::where('user_id', $user->id)
-            ->selectRaw("strftime('%Y', transaction_date) as year")
+            ->selectRaw("$yearExpr as year")
             ->groupBy('year')
             ->orderByDesc('year')
             ->pluck('year');

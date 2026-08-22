@@ -67,8 +67,12 @@ class DashboardController extends Controller
 
     private function monthlyRevenue(): array
     {
+        $isSqlite = DB::getDriverName() === 'sqlite';
+        $monthExpr = $isSqlite ? "strftime('%m', created_at)" : "DATE_FORMAT(created_at, '%m')";
+        $yearExpr  = $isSqlite ? "strftime('%Y', created_at)" : "DATE_FORMAT(created_at, '%Y')";
+
         return Sale::where('status', 'completed')
-            ->selectRaw("strftime('%m', created_at) as month, strftime('%Y', created_at) as year, SUM(net_amount) as total")
+            ->selectRaw("$monthExpr as month, $yearExpr as year, SUM(net_amount) as total")
             ->groupBy('year', 'month')
             ->orderBy('year')->orderBy('month')
             ->take(12)->get()
