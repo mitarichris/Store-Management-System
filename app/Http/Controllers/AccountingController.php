@@ -107,7 +107,7 @@ class AccountingController extends Controller
         ]);
 
         return redirect()->route('accounting.index')
-            ->with('success', 'Opening capital set to ' . number_format($amount) . ' RWF.');
+            ->with('success', 'Opening capital set to ' . number_format($amount) . ' RWF.')->with('flash_key', 'flash_capital_set')->with('flash_amount', number_format($amount));
     }
 
     // Record stock purchase — tracked in inventory only (does NOT reduce balance)
@@ -140,7 +140,7 @@ class AccountingController extends Controller
         ]);
 
         return redirect()->route('accounting.index')
-            ->with('success', "Stock purchase of " . number_format($cost) . " RWF recorded in inventory.");
+            ->with('success', "Stock purchase of " . number_format($cost) . " RWF recorded in inventory.")->with('flash_key', 'flash_stock_recorded')->with('flash_amount', number_format($cost));
     }
 
     public function destroy(Transaction $transaction)
@@ -155,7 +155,7 @@ class AccountingController extends Controller
         }
 
         return redirect()->route('accounting.index')
-            ->with('success', 'Transaction deleted and balance recalculated.');
+            ->with('success', 'Transaction deleted and balance recalculated.')->with('flash_key', 'flash_transaction_deleted');
     }
 
     public function report(Request $request)
@@ -196,7 +196,7 @@ class AccountingController extends Controller
 
         // Fix: pass as $availableYears to match the view variable name
         $availableYears = Transaction::where('user_id', $user->id)
-            ->selectRaw('YEAR(transaction_date) as year')
+            ->selectRaw("strftime('%Y', transaction_date) as year")
             ->groupBy('year')
             ->orderByDesc('year')
             ->pluck('year');

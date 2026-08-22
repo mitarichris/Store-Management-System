@@ -48,27 +48,27 @@ canvas { max-height:220px; }
 @section('content')
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-calculator-fill me-2" style="color:var(--accent)"></i>Accounting</h1>
+        <h1><i class="bi bi-calculator-fill me-2" style="color:var(--accent)"></i><span data-i18n="acct_title">Accounting</span></h1>
         <p style="color:var(--text-secondary);font-size:13px;margin:4px 0 0">
-            Financial overview for <strong>{{ auth()->user()->name }}</strong>
+            <span data-i18n="acct_overview">Financial overview for</span> <strong>{{ auth()->user()->name }}</strong>
         </p>
     </div>
     <div class="page-actions">
         <a href="{{ route('accounting.report') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-file-earmark-bar-graph me-1"></i>P&L Report
+            <i class="bi bi-file-earmark-bar-graph me-1"></i><span data-i18n="acct_pnl_report">P&L Report</span>
         </a>
         <button class="btn btn-outline-danger" onclick="openModal('inventoryModal')">
-            <i class="bi bi-box-seam me-1"></i>Record Stock Purchase
+            <i class="bi bi-box-seam me-1"></i><span data-i18n="acct_record_purchase">Record Stock Purchase</span>
         </button>
         <button class="btn btn-primary" onclick="openModal('balanceModal')">
-            <i class="bi bi-wallet-fill me-1"></i>Set Capital
+            <i class="bi bi-wallet-fill me-1"></i><span data-i18n="acct_set_capital">Set Capital</span>
         </button>
     </div>
 </div>
 
 <div class="auto-badge">
     <i class="bi bi-lightning-charge-fill"></i>
-    <span>Revenue and balance update <strong>automatically</strong> every time a sale is completed — no manual entry needed.</span>
+    <span data-i18n="acct_auto_badge">Revenue and balance update <strong>automatically</strong> every time a sale is completed — no manual entry needed.</span>
 </div>
 
 {{-- ── 4 Cards ──────────────────────────────────────────────────── --}}
@@ -76,38 +76,38 @@ canvas { max-height:220px; }
 
     <div class="acc-card capital">
         <div class="ac-label" style="color:#38bdf8">
-            <i class="bi bi-wallet2 me-1"></i>Opening Capital
+            <i class="bi bi-wallet2 me-1"></i><span data-i18n="acct_opening_capital">Opening Capital</span>
         </div>
         <div class="ac-value">{{ number_format($account->opening_balance) }}</div>
-        <div class="ac-sub">RWF — starting cash (fixed)</div>
+        <div class="ac-sub"><span data-i18n="acct_capital_desc">RWF — starting cash (fixed)</span></div>
         <button class="btn btn-sm btn-outline-secondary mt-2" style="font-size:11px" onclick="openModal('balanceModal')">
-            <i class="bi bi-pencil me-1"></i>Edit
+            <i class="bi bi-pencil me-1"></i><span data-i18n="edit">Edit</span>
         </button>
     </div>
 
     <div class="acc-card inventory">
         <div class="ac-label" style="color:#ef4444">
-            <i class="bi bi-box-seam-fill me-1"></i>Inventory
+            <i class="bi bi-box-seam-fill me-1"></i><span data-i18n="acct_inventory_label">Inventory</span>
         </div>
         <div class="ac-value" style="color:var(--danger)">
             {{ number_format($account->totalInventoryCost()) }}
         </div>
-        <div class="ac-sub">RWF — total stock purchased</div>
+        <div class="ac-sub"><span data-i18n="acct_inventory_desc">RWF — total stock purchased</span></div>
         <button class="btn btn-sm btn-outline-danger mt-2" style="font-size:11px" onclick="openModal('inventoryModal')">
-            <i class="bi bi-plus me-1"></i>Record
+            <i class="bi bi-plus me-1"></i><span data-i18n="acct_record">Record</span>
         </button>
     </div>
 
     <div class="acc-card revenue">
         <div class="ac-label" style="color:#22c55e">
-            <i class="bi bi-graph-up-arrow me-1"></i>Revenue (Profit)
+            <i class="bi bi-graph-up-arrow me-1"></i><span data-i18n="acct_revenue_profit">Revenue (Profit)</span>
         </div>
         <div class="ac-value" style="color:var(--success)">
             {{ number_format($account->totalRevenue()) }}
         </div>
-        <div class="ac-sub">RWF — profit from sales (auto)</div>
+        <div class="ac-sub"><span data-i18n="acct_revenue_desc">RWF — profit from sales (auto)</span></div>
         <a href="{{ route('sales.create') }}" class="btn btn-sm btn-outline-success mt-2" style="font-size:11px">
-            <i class="bi bi-plus-circle me-1"></i>New Sale
+            <i class="bi bi-plus-circle me-1"></i><span data-i18n="acct_new_sale">New Sale</span>
         </a>
     </div>
 
@@ -118,18 +118,18 @@ canvas { max-height:220px; }
     @endphp
     <div class="acc-card balance" style="border-top-color:{{ $isUp ? '#22c55e' : '#f59e0b' }}">
         <div class="ac-label" style="color:var(--accent)">
-            <i class="bi bi-cash-coin me-1"></i>Current Balance
+            <i class="bi bi-cash-coin me-1"></i><span data-i18n="acct_current_balance">Current Balance</span>
         </div>
         <div class="ac-value" style="color:{{ $isUp ? 'var(--success)' : 'var(--warning)' }}">
             {{ number_format($balance) }}
         </div>
-        <div class="ac-sub">RWF — Capital + Revenue</div>
+        <div class="ac-sub"><span data-i18n="acct_balance_desc">RWF — Capital + Revenue</span></div>
         @if($account->totalRevenue() > 0)
         <div style="font-size:12px;font-weight:700;color:var(--success);margin-top:4px">
-            ▲ Profit: {{ number_format($account->totalRevenue()) }} RWF
+            <span data-i18n="acct_profit">▲ Profit:</span> {{ number_format($account->totalRevenue()) }} RWF
         </div>
         @elseif($account->totalRevenue() == 0)
-        <div style="font-size:12px;color:var(--text-muted);margin-top:4px">No sales yet</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px"><span data-i18n="acct_no_sales">No sales yet</span></div>
         @endif
     </div>
 </div>
@@ -139,7 +139,7 @@ canvas { max-height:220px; }
     <div class="card-body py-3">
         <form class="d-flex gap-3 flex-wrap align-items-end">
             <div>
-                <label class="form-label">Filter Period</label>
+                <label class="form-label"><span data-i18n="acct_filter_period">Filter Period</span></label>
                 <select name="period" class="form-select" style="width:160px" onchange="this.form.submit()">
                     @foreach(['all'=>'All Time','today'=>'Today','week'=>'This Week','month'=>'This Month','year'=>'This Year','custom'=>'Custom Range'] as $v=>$l)
                     <option value="{{ $v }}" {{ $period===$v?'selected':'' }}>{{ $l }}</option>
@@ -147,11 +147,11 @@ canvas { max-height:220px; }
                 </select>
             </div>
             @if($period==='custom')
-            <div><label class="form-label">From</label><input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}"></div>
-            <div><label class="form-label">To</label><input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}"></div>
-            <button type="submit" class="btn btn-primary">Apply</button>
+            <div><label class="form-label" data-i18n="acct_from">From</label><input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}"></div>
+            <div><label class="form-label" data-i18n="acct_to">To</label><input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}"></div>
+            <button type="submit" class="btn btn-primary" data-i18n="acct_apply">Apply</button>
             @endif
-            <a href="{{ route('accounting.index') }}" class="btn btn-outline-secondary">Reset</a>
+            <a href="{{ route('accounting.index') }}" class="btn btn-outline-secondary" data-i18n="acct_reset">Reset</a>
         </form>
     </div>
 </div>
@@ -160,19 +160,19 @@ canvas { max-height:220px; }
 <div class="row g-3 mb-4">
     <div class="col-md-4">
         <div class="card text-center p-3">
-            <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Period Stock Cost</div>
+            <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px"><span data-i18n="acct_period_stock">Period Stock Cost</span></div>
             <div style="font-size:22px;font-weight:800;color:var(--danger)">{{ number_format($periodInventory) }} RWF</div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="card text-center p-3">
-            <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Period Profit Earned</div>
+            <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px"><span data-i18n="acct_period_profit">Period Profit Earned</span></div>
             <div style="font-size:22px;font-weight:800;color:var(--success)">{{ number_format($periodRevenue) }} RWF</div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="card text-center p-3">
-            <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Net Result</div>
+            <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px"><span data-i18n="acct_net_result">Net Result</span></div>
             <div style="font-size:22px;font-weight:800;color:{{ $periodProfit >= 0 ? 'var(--success)' : 'var(--danger)' }}">
                 {{ $periodProfit >= 0 ? '+' : '' }}{{ number_format($periodProfit) }} RWF
             </div>
@@ -185,25 +185,25 @@ canvas { max-height:220px; }
 <div class="row g-4 mb-4">
     <div class="col-md-8">
         <div class="card">
-            <div class="card-header">Monthly Overview ({{ now()->year }})</div>
+            <div class="card-header"><span data-i18n="acct_monthly_overview">Monthly Overview</span> ({{ now()->year }})</div>
             <div class="card-body"><canvas id="accountChart"></canvas></div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="card h-100">
-            <div class="card-header">Quick Actions</div>
+            <div class="card-header"><span data-i18n="acct_quick_actions">Quick Actions</span></div>
             <div class="card-body d-flex flex-column gap-3">
                 <button class="btn btn-outline-info w-100" onclick="openModal('balanceModal')">
-                    <i class="bi bi-wallet2 me-2"></i>Set Opening Capital
+                    <i class="bi bi-wallet2 me-2"></i><span data-i18n="acct_set_capital_btn">Set Opening Capital</span>
                 </button>
                 <button class="btn btn-outline-danger w-100" onclick="openModal('inventoryModal')">
-                    <i class="bi bi-box-seam me-2"></i>Record Stock Purchase
+                    <i class="bi bi-box-seam me-2"></i><span data-i18n="acct_record_purchase">Record Stock Purchase</span>
                 </button>
                 <a href="{{ route('sales.create') }}" class="btn btn-outline-success w-100">
-                    <i class="bi bi-plus-circle me-2"></i>New Sale (auto-records profit)
+                    <i class="bi bi-plus-circle me-2"></i><span data-i18n="acct_new_sale_btn">New Sale (auto-records profit)</span>
                 </a>
                 <a href="{{ route('accounting.report') }}" class="btn btn-outline-secondary w-100">
-                    <i class="bi bi-file-earmark-bar-graph me-2"></i>P&L Report
+                    <i class="bi bi-file-earmark-bar-graph me-2"></i><span data-i18n="acct_pnl_report">P&L Report</span>
                 </a>
             </div>
         </div>
@@ -213,13 +213,13 @@ canvas { max-height:220px; }
 {{-- Transactions table --}}
 <div class="card">
     <div class="card-header d-flex align-items-center justify-content-between">
-        Transaction History
-        <span class="badge" style="background:var(--accent-soft);color:var(--accent)">Revenue auto-recorded from sales</span>
+        <span data-i18n="acct_transaction_history">Transaction History</span>
+        <span class="badge" style="background:var(--accent-soft);color:var(--accent)"><span data-i18n="acct_auto_recorded">Revenue auto-recorded from sales</span></span>
     </div>
     <div class="card-body p-0">
         <table class="table mb-0">
             <thead>
-                <tr><th>Date</th><th>Type</th><th>Description</th><th>Amount (RWF)</th><th>Balance After (RWF)</th><th></th></tr>
+                <tr><th data-i18n="acct_col_date">Date</th><th data-i18n="acct_col_type">Type</th><th data-i18n="acct_col_desc">Description</th><th data-i18n="acct_col_amount">Amount (RWF)</th><th data-i18n="acct_col_balance">Balance After (RWF)</th><th></th></tr>
             </thead>
             <tbody>
             @forelse($transactions as $tx)
@@ -245,7 +245,7 @@ canvas { max-height:220px; }
             <tr>
                 <td colspan="6" class="text-center py-5" style="color:var(--text-muted)">
                     <i class="bi bi-receipt" style="font-size:2rem;display:block;margin-bottom:8px"></i>
-                    No transactions yet. Set your opening capital, then make sales!
+                    <span data-i18n="acct_no_transactions">No transactions yet. Set your opening capital, then make sales!</span>
                 </td>
             </tr>
             @endforelse
@@ -260,26 +260,26 @@ canvas { max-height:220px; }
 {{-- Opening Capital Modal --}}
 <div class="modal-overlay" id="balanceModal">
     <div class="modal-box">
-        <h3><i class="bi bi-wallet2 me-2"></i>Set Opening Capital</h3>
-        <div class="modal-sub">The cash you had before buying stock. Fixed — never changes automatically.</div>
+        <h3><i class="bi bi-wallet2 me-2"></i><span data-i18n="acct_set_capital_title">Set Opening Capital</span></h3>
+        <div class="modal-sub"><span data-i18n="acct_capital_explain">The cash you had before buying stock. Fixed — never changes automatically.</span></div>
         <form method="POST" action="{{ route('accounting.opening-balance') }}">
             @csrf
             <div class="mb-3">
-                <label class="form-label">Opening Capital (RWF) *</label>
+                <label class="form-label"><span data-i18n="acct_capital_label">Opening Capital (RWF) *</span></label>
                 <input type="number" name="opening_balance" class="form-control"
                     value="{{ $account->opening_balance }}" min="0" step="1" required placeholder="e.g. 100000">
             </div>
             <div class="mb-3">
-                <label class="form-label">Date</label>
+                <label class="form-label" data-i18n="acct_date_label">Date</label>
                 <input type="date" name="date" class="form-control" value="{{ today()->toDateString() }}">
             </div>
             <div class="mb-4">
-                <label class="form-label">Notes (optional)</label>
+                <label class="form-label" data-i18n="acct_notes_optional">Notes (optional)</label>
                 <textarea name="notes" class="form-control" rows="2">{{ $account->notes }}</textarea>
             </div>
             <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Save Capital</button>
-                <button type="button" class="btn btn-outline-secondary" onclick="closeModal('balanceModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary" data-i18n="acct_save_capital">Save Capital</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="closeModal('balanceModal')" data-i18n="acct_cancel">Cancel</button>
             </div>
         </form>
     </div>
@@ -288,17 +288,17 @@ canvas { max-height:220px; }
 {{-- Stock Purchase Modal --}}
 <div class="modal-overlay" id="inventoryModal">
     <div class="modal-box">
-        <h3><i class="bi bi-box-seam me-2"></i>Record Stock Purchase</h3>
+        <h3><i class="bi bi-box-seam me-2"></i><span data-i18n="acct_purchase_title">Record Stock Purchase</span></h3>
         <div class="modal-sub">
-            Record how much you spent buying stock. This is tracked in Inventory only.<br>
-            Example: Buy stock at 40,000 RWF → Inventory = 40,000 RWF.
+            <span data-i18n="acct_purchase_explain">Record how much you spent buying stock. This is tracked in Inventory only.</span><br>
+            <span data-i18n="acct_purchase_example">Example: Buy stock at 40,000 RWF → Inventory = 40,000 RWF.</span>
         </div>
         <form method="POST" action="{{ route('accounting.inventory') }}">
             @csrf
             <div class="mb-3">
-                <label class="form-label">Product *</label>
+                <label class="form-label" data-i18n="acct_product_label">Product *</label>
                 <select name="product_id" class="form-select" required onchange="fillCost(this)">
-                    <option value="">Select product…</option>
+                    <option value="" data-i18n="acct_select_product">Select product…</option>
                     @foreach(\App\Models\Product::where('is_active', true)->get() as $p)
                     <option value="{{ $p->id }}" data-cost="{{ $p->cost_price }}">
                         {{ $p->name }} — Cost: {{ number_format($p->cost_price) }} RWF
@@ -307,21 +307,21 @@ canvas { max-height:220px; }
                 </select>
             </div>
             <div class="mb-3">
-                <label class="form-label">Amount Paid (RWF) *</label>
+                <label class="form-label" data-i18n="acct_amount_paid">Amount Paid (RWF) *</label>
                 <input type="number" name="cost_price" id="costInput" class="form-control"
                     min="0" step="1" required placeholder="e.g. 40000">
             </div>
             <div class="mb-3">
-                <label class="form-label">Date *</label>
+                <label class="form-label" data-i18n="acct_date_label">Date *</label>
                 <input type="date" name="date" class="form-control" value="{{ today()->toDateString() }}" required>
             </div>
             <div class="mb-4">
-                <label class="form-label">Description (optional)</label>
+                <label class="form-label" data-i18n="acct_desc_label">Description (optional)</label>
                 <input type="text" name="description" class="form-control" placeholder="e.g. Bought 10 units of Samsung A54">
             </div>
             <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-danger">Record Purchase</button>
-                <button type="button" class="btn btn-outline-secondary" onclick="closeModal('inventoryModal')">Cancel</button>
+                <button type="submit" class="btn btn-danger" data-i18n="acct_record_purchase_btn">Record Purchase</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="closeModal('inventoryModal')" data-i18n="acct_cancel">Cancel</button>
             </div>
         </form>
     </div>

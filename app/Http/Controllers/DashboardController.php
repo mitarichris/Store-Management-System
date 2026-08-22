@@ -68,7 +68,7 @@ class DashboardController extends Controller
     private function monthlyRevenue(): array
     {
         return Sale::where('status', 'completed')
-            ->selectRaw('MONTH(created_at) as month, YEAR(created_at) as year, SUM(net_amount) as total')
+            ->selectRaw("strftime('%m', created_at) as month, strftime('%Y', created_at) as year, SUM(net_amount) as total")
             ->groupBy('year', 'month')
             ->orderBy('year')->orderBy('month')
             ->take(12)->get()

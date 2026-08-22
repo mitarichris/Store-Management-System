@@ -81,7 +81,7 @@ class SaleController extends Controller
 
                 if ($product->stock_quantity < $item['quantity']) {
                     return back()->with('error',
-                        "Insufficient stock for '{$product->name}'. Available: {$product->stock_quantity}");
+                        "Insufficient stock for '{$product->name}'. Available: {$product->stock_quantity}")->with('flash_key', 'flash_sale_stock_error')->with('flash_name', $product->name)->with('flash_stock', $product->stock_quantity);
                 }
 
                 $subtotal      = $product->price * $item['quantity'];
@@ -167,11 +167,11 @@ class SaleController extends Controller
 
             DB::commit();
             return redirect()->route('sales.show', $sale)
-                ->with('success', "Sale #{$sale->sale_number} recorded! Profit: " . number_format($profit) . " RWF added to accounting.");
+                ->with('success', "Sale #{$sale->sale_number} recorded! Profit: " . number_format($profit) . " RWF added to accounting.")->with('flash_key', 'flash_sale_recorded')->with('flash_number', $sale->sale_number)->with('flash_profit', number_format($profit));
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Error recording sale: ' . $e->getMessage());
+            return back()->with('error', 'Error recording sale: ' . $e->getMessage())->with('flash_key', 'flash_sale_error')->with('flash_error_detail', $e->getMessage());
         }
     }
 
@@ -204,7 +204,7 @@ class SaleController extends Controller
         $sale->update($request->only('status', 'notes'));
 
         return redirect()->route('sales.show', $sale)
-            ->with('success', "Sale #{$sale->sale_number} updated.");
+            ->with('success', "Sale #{$sale->sale_number} updated.")->with('flash_key', 'flash_sale_updated')->with('flash_number', $sale->sale_number);
     }
 
     public function destroy(Sale $sale)
@@ -229,7 +229,7 @@ class SaleController extends Controller
         });
 
         return redirect()->route('sales.index')
-            ->with('success', "Sale deleted, stock restored and accounting updated.");
+            ->with('success', "Sale deleted, stock restored and accounting updated.")->with('flash_key', 'flash_sale_deleted');
     }
 
     private function authorizeSaleView(Sale $sale): void

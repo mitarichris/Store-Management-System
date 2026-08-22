@@ -98,7 +98,7 @@ class SalesHistoryController extends Controller
         }
 
         // ── Available years ────────────────────────────────────────────────
-        $availableYears = Sale::selectRaw('YEAR(created_at) as year')
+        $availableYears = Sale::selectRaw("strftime('%Y', created_at) as year")
             ->groupBy('year')->orderByDesc('year')->pluck('year');
 
         if ($availableYears->isEmpty()) {

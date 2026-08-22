@@ -57,20 +57,34 @@
     border-radius:6px; padding:6px 12px; font-size:12px;
 }
 .item-pill strong { color:var(--accent); }
+@media (max-width:768px) {
+    .view-tabs { flex-wrap:wrap; gap:4px; }
+    .view-tab { padding:7px 14px; font-size:12px; flex:1; min-width:0; text-align:center; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); gap:8px; }
+    .sum-card { padding:12px 8px; }
+    .sum-val { font-size:16px; }
+    .cal-grid { gap:2px; }
+    .cal-day { font-size:11px; padding:2px; }
+    .cal-day .day-num { font-size:11px; }
+    .cal-nav a { padding:4px 8px; font-size:11px; }
+}
+@media (max-width:480px) {
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+}
 </style>
 @endpush
 
 @section('content')
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-clock-history me-2" style="color:var(--accent)"></i>Sales History</h1>
+        <h1><i class="bi bi-clock-history me-2" style="color:var(--accent)"></i><span data-i18n="nav_sales_history">Sales History</span></h1>
         <p style="color:var(--text-secondary);font-size:13px;margin:4px 0 0">
-            Browse every sale from the beginning of your business
+            <span data-i18n="history_browse">Browse every sale from the beginning of your business</span>
         </p>
     </div>
     <div class="page-actions">
         <a href="{{ route('sales.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i>New Sale
+            <i class="bi bi-plus-lg me-1"></i><span data-i18n="nav_new_sale">New Sale</span>
         </a>
     </div>
 </div>
@@ -79,15 +93,15 @@
 <div class="view-tabs">
     <a href="{{ route('history.index', array_merge(request()->query(), ['view'=>'daily'])) }}"
        class="view-tab {{ $viewMode==='daily' ? 'active' : '' }}">
-        <i class="bi bi-calendar-day me-1"></i>Daily
+        <i class="bi bi-calendar-day me-1"></i><span data-i18n="history_daily">Daily</span>
     </a>
     <a href="{{ route('history.index', array_merge(request()->query(), ['view'=>'monthly'])) }}"
        class="view-tab {{ $viewMode==='monthly' ? 'active' : '' }}">
-        <i class="bi bi-calendar-month me-1"></i>Monthly
+        <i class="bi bi-calendar-month me-1"></i><span data-i18n="history_monthly">Monthly</span>
     </a>
     <a href="{{ route('history.index', array_merge(request()->query(), ['view'=>'annual'])) }}"
        class="view-tab {{ $viewMode==='annual' ? 'active' : '' }}">
-        <i class="bi bi-calendar3 me-1"></i>Annual
+        <i class="bi bi-calendar3 me-1"></i><span data-i18n="history_annual">Annual</span>
     </a>
 </div>
 
@@ -102,13 +116,13 @@
 
                     @if($viewMode === 'daily')
                     <div>
-                        <label class="form-label">Select Date</label>
+                        <label class="form-label" data-i18n="history_select_date">Select Date</label>
                         <input type="date" name="date" class="form-control"
                             value="{{ $dateStr }}" max="{{ today()->toDateString() }}">
                     </div>
                     @elseif($viewMode === 'monthly')
                     <div>
-                        <label class="form-label">Month</label>
+                        <label class="form-label" data-i18n="history_month">Month</label>
                         <select name="month" class="form-select" style="width:130px">
                             @foreach(range(1,12) as $m)
                             <option value="{{ $m }}" {{ $month==$m?'selected':'' }}>{{ date('F',mktime(0,0,0,$m,1)) }}</option>
@@ -116,7 +130,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="form-label">Year</label>
+                        <label class="form-label" data-i18n="history_year">Year</label>
                         <select name="year" class="form-select" style="width:110px">
                             @foreach($availableYears as $y)
                             <option value="{{ $y }}" {{ $year==$y?'selected':'' }}>{{ $y }}</option>
@@ -125,7 +139,7 @@
                     </div>
                     @elseif($viewMode === 'annual')
                     <div>
-                        <label class="form-label">Year</label>
+                        <label class="form-label" data-i18n="history_year">Year</label>
                         <select name="year" class="form-select" style="width:110px">
                             @foreach($availableYears as $y)
                             <option value="{{ $y }}" {{ $year==$y?'selected':'' }}>{{ $y }}</option>
@@ -136,9 +150,9 @@
 
                     @if(!auth()->user()->isSeller() && count($sellers) > 0)
                     <div>
-                        <label class="form-label">Seller</label>
+                        <label class="form-label" data-i18n="dash_seller">Seller</label>
                         <select name="seller_id" class="form-select" style="width:160px">
-                            <option value="">All Sellers</option>
+                            <option value="" data-i18n="history_all_sellers">All Sellers</option>
                             @foreach($sellers as $s)
                             <option value="{{ $s->id }}" {{ $sellerId==$s->id?'selected':'' }}>{{ $s->name }}</option>
                             @endforeach
@@ -147,9 +161,9 @@
                     @endif
 
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-search me-1"></i>View
+                        <i class="bi bi-search me-1"></i><span data-i18n="history_view">View</span>
                     </button>
-                    <a href="{{ route('history.index') }}" class="btn btn-outline-secondary">Reset</a>
+                    <a href="{{ route('history.index') }}" class="btn btn-outline-secondary"><span data-i18n="reset">Reset</span></a>
                 </form>
             </div>
         </div>
@@ -158,23 +172,23 @@
         <div class="summary-grid">
             <div class="sum-card">
                 <div class="sum-val" style="color:var(--accent)">{{ number_format($summary['total_sales']) }}</div>
-                <div class="sum-label">Total Sales</div>
+                <div class="sum-label" data-i18n="history_total_sales">Total Sales</div>
             </div>
             <div class="sum-card">
                 <div class="sum-val" style="color:var(--success)">{{ number_format($summary['total_revenue']) }}</div>
-                <div class="sum-label">Revenue (RWF)</div>
+                <div class="sum-label" data-i18n="dash_revenue_rwf">Revenue (RWF)</div>
             </div>
             <div class="sum-card">
                 <div class="sum-val" style="color:var(--warning)">{{ number_format($summary['total_discount']) }}</div>
-                <div class="sum-label">Discounts (RWF)</div>
+                <div class="sum-label" data-i18n="history_discounts">Discounts (RWF)</div>
             </div>
             <div class="sum-card">
                 <div class="sum-val" style="color:var(--success)">{{ $summary['completed'] }}</div>
-                <div class="sum-label">Completed</div>
+                <div class="sum-label" data-i18n="history_completed">Completed</div>
             </div>
             <div class="sum-card">
                 <div class="sum-val" style="color:var(--danger)">{{ $summary['cancelled'] }}</div>
-                <div class="sum-label">Cancelled</div>
+                <div class="sum-label" data-i18n="history_cancelled">Cancelled</div>
             </div>
         </div>
 
@@ -183,29 +197,30 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <span>
                     @if($viewMode === 'daily')
-                        Sales on {{ \Carbon\Carbon::parse($dateStr)->format('l, d F Y') }}
+                        <span data-i18n="hist_sales_on_prefix">Sales on</span> {{ \Carbon\Carbon::parse($dateStr)->format('l, d F Y') }}
                     @elseif($viewMode === 'monthly')
-                        Sales in {{ date('F', mktime(0,0,0,$month,1)) }} {{ $year }}
+                        <span data-i18n="hist_sales_in_prefix">Sales in</span> {{ date('F', mktime(0,0,0,$month,1)) }} {{ $year }}
                     @else
-                        Sales in {{ $year }}
+                        <span data-i18n="hist_sales_in_prefix">Sales in</span> {{ $year }}
                     @endif
                 </span>
                 <span class="badge" style="background:var(--accent-soft);color:var(--accent)">
-                    {{ $sales->total() }} records
+                    {{ $sales->total() }} <span data-i18n="hist_records">records</span>
                 </span>
             </div>
             <div class="card-body p-0">
+                <div class="table-scroll">
                 <table class="table mb-0">
                     <thead>
                         <tr>
-                            <th>Sale #</th>
-                            <th>Date & Time</th>
-                            @if(!auth()->user()->isSeller())<th>Seller</th>@endif
-                            <th>Customer</th>
-                            <th>Items</th>
-                            <th>Net Amount</th>
-                            <th>Payment</th>
-                            <th>Status</th>
+                            <th data-i18n="hist_col_num">Sale #</th>
+                            <th data-i18n="history_date_time">Date & Time</th>
+                            @if(!auth()->user()->isSeller())<th data-i18n="dash_seller">Seller</th>@endif
+                            <th data-i18n="sales_col_customer">Customer</th>
+                            <th data-i18n="users_col_items">Items</th>
+                            <th data-i18n="sales_col_net">Net Amount</th>
+                            <th data-i18n="sales_col_payment">Payment</th>
+                            <th data-i18n="users_col_status">Status</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -227,7 +242,7 @@
                         <td style="font-size:13px">{{ $sale->customer_name ?? '—' }}</td>
                         <td>
                             <span class="badge" style="background:var(--accent-soft);color:var(--accent)">
-                                {{ $sale->items->count() }} item{{ $sale->items->count() > 1 ? 's' : '' }}
+                                {{ $sale->items->count() }} <span data-i18n="{{ $sale->items->count() > 1 ? 'hist_items_suffix' : 'hist_item_suffix' }}">{{ $sale->items->count() > 1 ? 'items' : 'item' }}</span>
                             </span>
                         </td>
                         <td style="font-weight:700;color:var(--success)">
@@ -256,7 +271,7 @@
                         <td colspan="{{ auth()->user()->isSeller() ? 7 : 8 }}" style="padding:0">
                             <div class="detail-inner">
                                 <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-weight:600">
-                                    ITEMS IN THIS SALE
+                                    <span data-i18n="history_items_in_sale">ITEMS IN THIS SALE</span>
                                 </div>
                                 <div class="item-list">
                                     @foreach($sale->items as $item)
@@ -269,7 +284,7 @@
                                 </div>
                                 @if($sale->notes)
                                 <div style="margin-top:10px;font-size:12px;color:var(--text-secondary)">
-                                    <strong>Notes:</strong> {{ $sale->notes }}
+                                    <strong data-i18n="hist_notes">Notes:</strong> {{ $sale->notes }}
                                 </div>
                                 @endif
                             </div>
@@ -279,16 +294,17 @@
                     <tr>
                         <td colspan="{{ auth()->user()->isSeller() ? 7 : 8 }}" class="text-center py-5" style="color:var(--text-muted)">
                             <i class="bi bi-clock-history" style="font-size:2.5rem;display:block;margin-bottom:10px;opacity:0.4"></i>
-                            No sales found for this period.
+                            <span data-i18n="history_no_sales">No sales found for this period.</span>
                             @if($viewMode === 'daily')
                             <br>
-                            <small>Try selecting a different date from the calendar.</small>
+                            <small data-i18n="hist_try_different">Try selecting a different date from the calendar.</small>
                             @endif
                         </td>
                     </tr>
                     @endforelse
                     </tbody>
                 </table>
+                </div>
             </div>
             @if($sales->hasPages())
             <div class="card-body" style="border-top:1px solid var(--card-border)">
@@ -320,7 +336,7 @@
                         'date'  => today()->toDateString(),
                         'month' => now()->month,
                         'year'  => now()->year,
-                    ])) }}">Today</a>
+                    ])) }}"><span data-i18n="hist_today">Today</span></a>
                     @if($nextMonth->lte(now()))
                     <a href="{{ route('history.index', array_merge(request()->query(), [
                         'view'  => 'daily',
@@ -333,8 +349,8 @@
             </div>
 
             <div class="cal-grid">
-                @foreach(['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] as $d)
-                <div class="cal-day-label">{{ $d }}</div>
+                @foreach([['Sun','hist_sun'],['Mon','hist_mon'],['Tue','hist_tue'],['Wed','hist_wed'],['Thu','hist_thu'],['Fri','hist_fri'],['Sat','hist_sat']] as [$d,$dk])
+                <div class="cal-day-label"><span data-i18n="{{ $dk }}">{{ $d }}</span></div>
                 @endforeach
 
                 @php
@@ -370,7 +386,7 @@
                    title="{{ $hasSales ? $count.' sale(s) — '.number_format($calendarData[$dateKey]->revenue).' RWF' : 'No sales' }}">
                     <span class="day-num">{{ $day }}</span>
                     @if($hasSales)
-                    <span class="day-count">{{ $count }}s</span>
+                    <span class="day-count">{{ $count }}<span data-i18n="hist_item_suffix">s</span></span>
                     @endif
                 </a>
                 @endif
@@ -381,42 +397,42 @@
             <div class="d-flex gap-3 mt-3" style="font-size:11px;color:var(--text-muted)">
                 <div class="d-flex align-items-center gap-1">
                     <div style="width:10px;height:10px;border-radius:3px;background:rgba(108,99,255,0.3)"></div>
-                    Has sales
+                    <span data-i18n="hist_has_sales">Has sales</span>
                 </div>
                 <div class="d-flex align-items-center gap-1">
                     <div style="width:10px;height:10px;border-radius:3px;background:var(--accent)"></div>
-                    Selected
+                    <span data-i18n="hist_selected">Selected</span>
                 </div>
                 <div class="d-flex align-items-center gap-1">
                     <div style="width:10px;height:10px;border-radius:3px;border:1px solid var(--warning)"></div>
-                    Today
+                    <span data-i18n="hist_today">Today</span>
                 </div>
             </div>
         </div>
 
         {{-- Quick jump to yesterday --}}
         <div class="card">
-            <div class="card-header" style="font-size:13px">Quick Navigation</div>
+            <div class="card-header" style="font-size:13px" data-i18n="history_quick_nav">Quick Navigation</div>
             <div class="card-body d-flex flex-column gap-2">
                 <a href="{{ route('history.index', ['view'=>'daily','date'=>today()->toDateString()]) }}"
                    class="btn btn-outline-secondary btn-sm text-start">
-                    <i class="bi bi-calendar-check me-2"></i>Today — {{ today()->format('d M Y') }}
+                    <i class="bi bi-calendar-check me-2"></i><span data-i18n="hist_today">Today</span> — {{ today()->format('d M Y') }}
                 </a>
                 <a href="{{ route('history.index', ['view'=>'daily','date'=>today()->subDay()->toDateString()]) }}"
                    class="btn btn-outline-secondary btn-sm text-start">
-                    <i class="bi bi-calendar-minus me-2"></i>Yesterday — {{ today()->subDay()->format('d M Y') }}
+                    <i class="bi bi-calendar-minus me-2"></i><span data-i18n="hist_yesterday">Yesterday</span> — {{ today()->subDay()->format('d M Y') }}
                 </a>
                 <a href="{{ route('history.index', ['view'=>'monthly','month'=>now()->month,'year'=>now()->year]) }}"
                    class="btn btn-outline-secondary btn-sm text-start">
-                    <i class="bi bi-calendar-month me-2"></i>This Month — {{ now()->format('F Y') }}
+                    <i class="bi bi-calendar-month me-2"></i><span data-i18n="hist_this_month">This Month</span> — {{ now()->format('F Y') }}
                 </a>
                 <a href="{{ route('history.index', ['view'=>'monthly','month'=>now()->subMonth()->month,'year'=>now()->subMonth()->year]) }}"
                    class="btn btn-outline-secondary btn-sm text-start">
-                    <i class="bi bi-calendar2-minus me-2"></i>Last Month — {{ now()->subMonth()->format('F Y') }}
+                    <i class="bi bi-calendar2-minus me-2"></i><span data-i18n="hist_last_month">Last Month</span> — {{ now()->subMonth()->format('F Y') }}
                 </a>
                 <a href="{{ route('history.index', ['view'=>'annual','year'=>now()->year]) }}"
                    class="btn btn-outline-secondary btn-sm text-start">
-                    <i class="bi bi-calendar3 me-2"></i>This Year — {{ now()->year }}
+                    <i class="bi bi-calendar3 me-2"></i><span data-i18n="hist_this_year">This Year</span> — {{ now()->year }}
                 </a>
             </div>
         </div>

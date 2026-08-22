@@ -4,10 +4,10 @@
 
 @section('content')
 <div class="page-header">
-    <h1><i class="bi bi-receipt-cutoff me-2" style="color:var(--accent)"></i>Sales</h1>
+    <h1><i class="bi bi-receipt-cutoff me-2" style="color:var(--accent)"></i><span data-i18n="nav_sales">Sales</span></h1>
     <div class="page-actions">
         @if(auth()->user()->hasPermission('create_sales'))
-        <a href="{{ route('sales.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>New Sale</a>
+        <a href="{{ route('sales.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i><span data-i18n="nav_new_sale">New Sale</span></a>
         @endif
     </div>
 </div>
@@ -15,39 +15,40 @@
 <!-- Filters -->
 <div class="card mb-4">
     <div class="card-body py-3">
-        <form class="d-flex gap-3 flex-wrap align-items-end">
-            <div>
-                <label class="form-label">Search</label>
-                <input type="text" name="search" class="form-control" placeholder="Sale # or customer…" value="{{ request('search') }}" style="width:200px">
+        <form class="filter-form" method="GET">
+            <div style="flex:1;min-width:140px">
+                <label class="form-label" data-i18n="search">Search</label>
+                <input type="text" name="search" class="form-control" data-i18n-placeholder="sales_search_ph" placeholder="Sale # or customer…" value="{{ request('search') }}">
             </div>
-            <div>
-                <label class="form-label">Status</label>
-                <select name="status" class="form-select" style="width:140px">
-                    <option value="">All</option>
+            <div style="flex:1;min-width:120px;max-width:160px">
+                <label class="form-label" data-i18n="users_col_status">Status</label>
+                <select name="status" class="form-select">
+                    <option value="" data-i18n="sales_all">All</option>
                     @foreach(['completed','pending','cancelled','refunded'] as $s)
                     <option value="{{ $s }}" {{ request('status')===$s?'selected':'' }}>{{ ucfirst($s) }}</option>
                     @endforeach
                 </select>
             </div>
-            <div>
-                <label class="form-label">From</label>
+            <div style="flex:1;min-width:130px">
+                <label class="form-label" data-i18n="sales_from">From</label>
                 <input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}">
             </div>
-            <div>
-                <label class="form-label">To</label>
+            <div style="flex:1;min-width:130px">
+                <label class="form-label" data-i18n="sales_to">To</label>
                 <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}">
             </div>
-            <button type="submit" class="btn btn-primary">Filter</button>
-            <a href="{{ route('sales.index') }}" class="btn btn-outline-secondary">Reset</a>
+            <button type="submit" class="btn btn-primary"><span data-i18n="filter">Filter</span></button>
+            <a href="{{ route('sales.index') }}" class="btn btn-outline-secondary"><span data-i18n="reset">Reset</span></a>
         </form>
     </div>
 </div>
 
 <div class="card">
     <div class="card-body p-0">
+        <div class="table-scroll">
         <table class="table mb-0">
             <thead>
-                <tr><th>Sale #</th><th>Customer</th><th>Seller</th><th>Total</th><th>Discount</th><th>Net Amount</th><th>Payment</th><th>Status</th><th>Date</th><th></th></tr>
+                <tr><th data-i18n="hist_col_num">Sale #</th><th data-i18n="sales_col_customer">Customer</th><th data-i18n="dash_seller">Seller</th><th data-i18n="sales_col_total">Total</th><th data-i18n="sales_col_discount">Discount</th><th data-i18n="sales_col_net">Net Amount</th><th data-i18n="sales_col_payment">Payment</th><th data-i18n="users_col_status">Status</th><th data-i18n="sales_date">Date</th><th></th></tr>
             </thead>
             <tbody>
             @forelse($sales as $sale)
@@ -80,10 +81,11 @@
                 </td>
             </tr>
             @empty
-            <tr><td colspan="10" class="text-center py-5" style="color:var(--text-muted)">No sales found.</td></tr>
+            <tr><td colspan="10" class="text-center py-5" style="color:var(--text-muted)"><span data-i18n="sales_no_found">No sales found.</span></td></tr>
             @endforelse
             </tbody>
         </table>
+        </div>
     </div>
     @if($sales->hasPages())
     <div class="card-body" style="border-top:1px solid var(--card-border)">{{ $sales->links() }}</div>

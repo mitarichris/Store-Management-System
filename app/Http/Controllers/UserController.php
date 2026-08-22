@@ -56,7 +56,7 @@ class UserController extends Controller
         $user = User::create($validated);
 
         return redirect()->route('users.index')
-            ->with('success', "User '{$user->name}' created successfully.");
+            ->with('success', "User '{$user->name}' created successfully.")->with('flash_key', 'flash_user_created')->with('flash_name', $user->name);
     }
 
     public function show(User $user)
@@ -95,18 +95,18 @@ class UserController extends Controller
         $user->update($validated);
 
         return redirect()->route('users.index')
-            ->with('success', "User '{$user->name}' updated successfully.");
+            ->with('success', "User '{$user->name}' updated successfully.")->with('flash_key', 'flash_user_updated')->with('flash_name', $user->name);
     }
 
     public function destroy(User $user)
     {
         if ($user->id === auth()->id()) {
-            return back()->with('error', 'You cannot delete your own account.');
+            return back()->with('error', 'You cannot delete your own account.')->with('flash_key', 'flash_user_delete_self_error');
         }
 
         $user->delete();
         return redirect()->route('users.index')
-            ->with('success', "User '{$user->name}' deleted successfully.");
+            ->with('success', "User '{$user->name}' deleted successfully.")->with('flash_key', 'flash_user_deleted')->with('flash_name', $user->name);
     }
 
     private function getAllowedRoles(): array

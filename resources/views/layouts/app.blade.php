@@ -219,6 +219,7 @@
             border-bottom: 1px solid var(--card-border);
             padding: 16px 20px;
             font-weight: 700; font-size: 14px;
+            color: var(--text-primary);
         }
         .card-body { padding: 20px; }
 
@@ -311,19 +312,77 @@
         .pagination .page-link:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
         .pagination .page-item.active .page-link { background: var(--accent); border-color: var(--accent); color: #fff; }
 
+        /* ── Page header responsive ──────────────────────────────────────────── */
+        @media (max-width: 576px) {
+            .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .page-header .page-actions { margin-left: 0; width: 100%; display: flex; gap: 8px; flex-wrap: wrap; }
+            .page-header .page-actions .btn { flex: 1; min-width: 0; text-align: center; }
+        }
+
+        /* ── Table scroll wrapper ───────────────────────────────────────────── */
+        .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .table-scroll::-webkit-scrollbar { height: 6px; }
+        .table-scroll::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+
+        /* ── Filter form responsive ─────────────────────────────────────────── */
+        .filter-form { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+        .filter-form > div { min-width: 0; }
+        .filter-form .form-control,
+        .filter-form .form-select { width: 100% !important; }
+        @media (min-width: 577px) {
+            .filter-form > div { flex-shrink: 0; }
+        }
+        @media (max-width: 576px) {
+            .filter-form { gap: 10px; }
+            .filter-form .btn { width: 100%; }
+        }
+
         /* ── Mobile ───────────────────────────────────────────────────────── */
         @media (max-width: 768px) {
             #sidebar { transform: translateX(-100%); width: var(--sidebar-w) !important; }
             #sidebar.mobile-open { transform: translateX(0); }
-            #topbar { left: 0 !important; }
+            #topbar { left: 0 !important; padding: 0 12px; }
             #main-wrap { margin-left: 0 !important; }
-            .main-content { padding: 16px; }
+            .main-content { padding: 16px 12px; }
             .sidebar-overlay { display: block !important; }
+            .card-body { padding: 14px; }
+            .card-header { padding: 12px 14px; font-size: 13px; }
+            .stat-card { padding: 14px; }
+            .stat-value { font-size: 18px; }
+            .stat-icon { width: 38px; height: 38px; font-size: 17px; }
+            .topbar-breadcrumb { font-size: 12px; }
+            .topbar-right .topbar-btn:last-child { display: none; }
+            .table { font-size: 12.5px; }
+            .table th { font-size: 10px; padding: 10px 10px; }
+            .table td { padding: 10px; }
+            .btn-sm { padding: 4px 8px; font-size: 11px; }
+            .pagination .page-link { padding: 6px 10px; font-size: 12px; }
+        }
+        @media (max-width: 480px) {
+            .main-content { padding: 12px 8px; }
+            .stat-card { padding: 12px; gap: 10px; }
+            .stat-value { font-size: 16px; }
+            .page-header h1 { font-size: 18px; }
         }
         .sidebar-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,0.5); z-index: 999;
         }
+
+        /* ── Topbar Language Switcher ────────────────────────────── */
+        .lang-dropdown-topbar { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent; }
+        .lang-dropdown-topbar::-webkit-scrollbar { width: 5px; }
+        .lang-dropdown-topbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        .lang-dropdown-topbar .lang-option {
+            display: flex; align-items: center; gap: 8px;
+            width: 100%; background: none; border: none;
+            padding: 8px 10px; border-radius: 6px;
+            color: var(--text-primary); font-size: 12.5px; font-weight: 500;
+            font-family: inherit; cursor: pointer; transition: background 0.15s;
+        }
+        .lang-dropdown-topbar .lang-option:hover { background: rgba(255,255,255,0.05); }
+        .lang-dropdown-topbar .lang-option.active { background: var(--accent-soft); color: var(--accent); }
+        .lang-dropdown-topbar .lang-flag { font-size: 16px; line-height: 1; }
     </style>
     @stack('styles')
 </head>
@@ -352,29 +411,29 @@
         <!-- Dashboard -->
         <div class="nav-item">
             <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span>
+                <i class="bi bi-grid-1x2-fill"></i><span data-i18n="nav_dashboard">Dashboard</span>
             </a>
         </div>
 
         {{-- ── Management section ──────────────────────────────── --}}
         @if(auth()->user()->hasPermission('view_users'))
-        <div class="nav-section-label">Management</div>
+        <div class="nav-section-label" data-i18n="nav_management">Management</div>
         <div class="nav-item">
             <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
-                <i class="bi bi-people-fill"></i><span>Users</span>
+                <i class="bi bi-people-fill"></i><span data-i18n="nav_users">Users</span>
             </a>
         </div>
         @endif
 
         {{-- ── Inventory section ──────────────────────────────── --}}
         @if(auth()->user()->hasPermission('view_categories') || auth()->user()->hasPermission('view_products'))
-        <div class="nav-section-label">Inventory</div>
+        <div class="nav-section-label" data-i18n="nav_inventory">Inventory</div>
         @endif
 
         @if(auth()->user()->hasPermission('view_categories'))
         <div class="nav-item">
             <a href="{{ route('categories.index') }}" class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
-                <i class="bi bi-tag-fill"></i><span>Categories</span>
+                <i class="bi bi-tag-fill"></i><span data-i18n="nav_categories">Categories</span>
             </a>
         </div>
         @endif
@@ -384,7 +443,7 @@
         <div class="nav-item">
             <a href="{{ route('products.index') }}" class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
                 <i class="bi bi-box-seam-fill"></i>
-                <span>Products</span>
+                <span data-i18n="nav_products">Products</span>
                 @if($lowStock > 0)<span class="nav-badge">{{ $lowStock }}</span>@endif
             </a>
         </div>
@@ -392,16 +451,16 @@
 
         {{-- ── Sales section ──────────────────────────────── --}}
         @if(auth()->user()->hasPermission('view_sales'))
-        <div class="nav-section-label">Sales</div>
+        <div class="nav-section-label" data-i18n="nav_sales">Sales</div>
         <div class="nav-item">
             <a href="{{ route('sales.index') }}" class="nav-link {{ request()->routeIs('sales.index') ? 'active' : '' }}">
-                <i class="bi bi-receipt-cutoff"></i><span>All Sales</span>
+                <i class="bi bi-receipt-cutoff"></i><span data-i18n="nav_all_sales">All Sales</span>
             </a>
         </div>
         @if(auth()->user()->hasPermission('create_sales'))
         <div class="nav-item">
             <a href="{{ route('sales.create') }}" class="nav-link {{ request()->routeIs('sales.create') ? 'active' : '' }}">
-                <i class="bi bi-plus-circle-fill"></i><span>New Sale</span>
+                <i class="bi bi-plus-circle-fill"></i><span data-i18n="nav_new_sale">New Sale</span>
             </a>
         </div>
         @endif
@@ -409,23 +468,23 @@
     </div>
 
     {{-- ── History ──────────────────────────────── --}}
-<div class="nav-section-label">History</div>
+<div class="nav-section-label" data-i18n="nav_history">History</div>
 <div class="nav-item">
     <a href="{{ route('history.index') }}" class="nav-link {{ request()->routeIs('history.*') ? 'active' : '' }}">
-        <i class="bi bi-clock-history"></i><span>Sales History</span>
+        <i class="bi bi-clock-history"></i><span data-i18n="nav_sales_history">Sales History</span>
     </a>
 </div>
 
     {{-- ── Accounting ──────────────────────────────── --}}
-<div class="nav-section-label">Accounting</div>
+<div class="nav-section-label" data-i18n="nav_accounting">Accounting</div>
 <div class="nav-item">
     <a href="{{ route('accounting.index') }}" class="nav-link {{ request()->routeIs('accounting.*') ? 'active' : '' }}">
-        <i class="bi bi-calculator-fill"></i><span>Accounting</span>
+        <i class="bi bi-calculator-fill"></i><span data-i18n="nav_accounting">Accounting</span>
     </a>
 </div>
 <div class="nav-item">
     <a href="{{ route('accounting.report') }}" class="nav-link {{ request()->routeIs('accounting.report') ? 'active' : '' }}">
-        <i class="bi bi-file-earmark-bar-graph"></i><span>P&L Report</span>
+        <i class="bi bi-file-earmark-bar-graph"></i><span data-i18n="nav_pnl_report">P&L Report</span>
     </a>
 </div>
 
@@ -434,7 +493,7 @@
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="nav-link w-100 border-0 bg-transparent text-start" style="color: var(--danger)">
-                <i class="bi bi-box-arrow-left"></i><span>Logout</span>
+                <i class="bi bi-box-arrow-left"></i><span data-i18n="nav_logout">Logout</span>
             </button>
         </form>
     </div>
@@ -451,6 +510,12 @@
             @yield('breadcrumb', '<span>Dashboard</span>')
         </div>
         <div class="topbar-right">
+            <div style="position:relative">
+                <button type="button" class="topbar-btn" id="currentLangBtn" style="width:auto;padding:0 10px;font-size:12px;font-weight:600;gap:6px;display:flex;align-items:center">
+                </button>
+                <div id="langDropdown" class="lang-dropdown-topbar" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:#1a1d28;border:1px solid var(--card-border);border-radius:10px;padding:6px;width:200px;max-height:320px;overflow-y:auto;z-index:1001;box-shadow:0 12px 40px rgba(0,0,0,0.5)">
+                </div>
+            </div>
             <a href="{{ route('dashboard') }}" class="topbar-btn" title="Dashboard">
                 <i class="bi bi-house-fill"></i>
             </a>
@@ -464,13 +529,13 @@
     <main class="main-content">
         @if(session('success'))
             <div class="alert alert-success alert-dismissible mb-4" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+                <i class="bi bi-check-circle-fill me-2"></i><span data-i18n="{{ session('flash_key') ?: '' }}" data-flash-name="{{ session('flash_name') ?: '' }}" data-flash-number="{{ session('flash_number') ?: '' }}" data-flash-amount="{{ session('flash_amount') ?: '' }}" data-flash-profit="{{ session('flash_profit') ?: '' }}" data-flash-stock="{{ session('flash_stock') ?: '' }}">{{ session('success') }}</span>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
             </div>
         @endif
         @if(session('error'))
             <div class="alert alert-danger alert-dismissible mb-4" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
+                <i class="bi bi-exclamation-triangle-fill me-2"></i><span data-i18n="{{ session('flash_key') ?: '' }}" data-flash-name="{{ session('flash_name') ?: '' }}" data-flash-number="{{ session('flash_number') ?: '' }}" data-flash-amount="{{ session('flash_amount') ?: '' }}" data-flash-profit="{{ session('flash_profit') ?: '' }}" data-flash-stock="{{ session('flash_stock') ?: '' }}" data-flash-error-detail="{{ session('flash_error_detail') ?: '' }}">{{ session('error') }}</span>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
             </div>
         @endif
@@ -511,6 +576,50 @@
 
     applySidebarState();
     window.addEventListener('resize', applySidebarState);
+</script>
+<script src="/js/i18n.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var dd = document.getElementById('langDropdown');
+    var btn = document.getElementById('currentLangBtn');
+    if (dd && btn) {
+        // buildLangDropdown() from i18n.js already populated the dropdown
+        // Just add toggle behavior
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var isOpen = dd.style.display === 'block';
+            dd.style.display = isOpen ? 'none' : 'block';
+            btn.classList.toggle('active', !isOpen);
+            if (!isOpen) {
+                var active = dd.querySelector('.lang-option.active');
+                if (active) active.scrollIntoView({ block: 'center' });
+            }
+        });
+        // Override setLang to also update button display
+        var origSetLang = window.setLang;
+        window.setLang = function(lang) {
+            origSetLang(lang);
+            updateTopbarLangUI();
+            dd.style.display = 'none';
+            btn.classList.remove('active');
+        };
+        updateTopbarLangUI();
+    }
+    function updateTopbarLangUI() {
+        var lang = localStorage.getItem('storehub_lang') || 'en';
+        var info = LANGUAGES.find(function(l){ return l.code === lang; });
+        if (btn && info) {
+            var flagStr = '';
+            try { flagStr = eval('"' + info.flag + '"'); } catch(e) { flagStr = ''; }
+            btn.innerHTML = '<span class="lang-flag" style="font-size:15px">' + flagStr + '</span> <span style="font-size:12px">' + info.name + '</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:2px"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+        }
+        if (dd) {
+            dd.querySelectorAll('.lang-option').forEach(function(opt) {
+                opt.classList.toggle('active', opt.dataset.lang === lang);
+            });
+        }
+    }
+});
 </script>
 @stack('scripts')
 </body>

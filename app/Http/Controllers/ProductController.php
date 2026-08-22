@@ -59,7 +59,7 @@ class ProductController extends Controller
         $product = Product::create($validated);
 
         return redirect()->route('products.index')
-            ->with('success', "Product '{$product->name}' created successfully.");
+            ->with('success', "Product '{$product->name}' created successfully.")->with('flash_key', 'flash_product_created')->with('flash_name', $product->name);
     }
 
     public function show(Product $product)
@@ -93,16 +93,16 @@ class ProductController extends Controller
         $product->update($validated);
 
         return redirect()->route('products.index')
-            ->with('success', "Product '{$product->name}' updated successfully.");
+            ->with('success', "Product '{$product->name}' updated successfully.")->with('flash_key', 'flash_product_updated')->with('flash_name', $product->name);
     }
 
     public function destroy(Product $product)
     {
         if ($product->saleItems()->exists()) {
-            return back()->with('error', 'Cannot delete product with existing sale records.');
+            return back()->with('error', 'Cannot delete product with existing sale records.')->with('flash_key', 'flash_product_delete_error');
         }
         $product->delete();
         return redirect()->route('products.index')
-            ->with('success', "Product '{$product->name}' deleted.");
+            ->with('success', "Product '{$product->name}' deleted.")->with('flash_key', 'flash_product_deleted')->with('flash_name', $product->name);
     }
 }

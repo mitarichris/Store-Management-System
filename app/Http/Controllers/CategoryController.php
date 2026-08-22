@@ -39,7 +39,7 @@ class CategoryController extends Controller
         $category = Category::create($validated);
 
         return redirect()->route('categories.index')
-            ->with('success', "Category '{$category->name}' created.");
+            ->with('success', "Category '{$category->name}' created.")->with('flash_key', 'flash_category_created')->with('flash_name', $category->name);
     }
 
     public function show(Category $category)
@@ -65,16 +65,16 @@ class CategoryController extends Controller
         $category->update($validated);
 
         return redirect()->route('categories.index')
-            ->with('success', "Category '{$category->name}' updated.");
+            ->with('success', "Category '{$category->name}' updated.")->with('flash_key', 'flash_category_updated')->with('flash_name', $category->name);
     }
 
     public function destroy(Category $category)
     {
         if ($category->products()->exists()) {
-            return back()->with('error', 'Cannot delete category that has products assigned to it.');
+            return back()->with('error', 'Cannot delete category that has products assigned to it.')->with('flash_key', 'flash_category_delete_error');
         }
         $category->delete();
         return redirect()->route('categories.index')
-            ->with('success', "Category '{$category->name}' deleted.");
+            ->with('success', "Category '{$category->name}' deleted.")->with('flash_key', 'flash_category_deleted')->with('flash_name', $category->name);
     }
 }
