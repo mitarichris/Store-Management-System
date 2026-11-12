@@ -213,6 +213,7 @@
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: var(--radius);
+            color: var(--text-primary);
         }
         .card-header {
             background: transparent;
@@ -610,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var info = LANGUAGES.find(function(l){ return l.code === lang; });
         if (btn && info) {
             var flagStr = '';
-            try { flagStr = eval('"' + info.flag + '"'); } catch(e) { flagStr = ''; }
+            try { flagStr = decodeFlag(info.flag); } catch(e) { flagStr = ''; }
             btn.innerHTML = '<span class="lang-flag" style="font-size:15px">' + flagStr + '</span> <span style="font-size:12px">' + info.name + '</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:2px"><polyline points="6 9 12 15 18 9"></polyline></svg>';
         }
         if (dd) {

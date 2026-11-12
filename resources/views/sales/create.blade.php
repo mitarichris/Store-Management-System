@@ -89,7 +89,7 @@
                     <span style="color:var(--danger)" id="discountDisplay">0 RWF</span>
                 </div>
                 <div class="d-flex justify-content-between" style="font-size:18px;font-weight:800">
-                    <span data-i18n="sales_total">Total</span>
+                    <span data-i18n="sales_total" style="color:var(--success)">Total</span>
                     <span style="color:var(--success)" id="totalDisplay">0 RWF</span>
                 </div>
             </div>

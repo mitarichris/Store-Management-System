@@ -472,7 +472,7 @@ LANGUAGES.forEach(function(lang) {
     btn.setAttribute('data-code', lang.code);
     btn.onclick = function() { loginSetLang(lang.code); };
     var flagStr = '';
-    try { flagStr = eval('"' + lang.flag + '"'); } catch(e) { flagStr = ''; }
+    try { flagStr = decodeFlag(lang.flag); } catch(e) { flagStr = ''; }
     btn.innerHTML = '<span class="flag">' + flagStr + '</span><span class="lang-name">' + lang.name + '</span><i class="bi bi-check2 lang-check"></i>';
     loginDropdown.appendChild(btn);
 });

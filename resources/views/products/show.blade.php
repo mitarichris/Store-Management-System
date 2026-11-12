@@ -24,7 +24,7 @@
                 @foreach([['Cost Price','cost_price','RWF','products_cost_price'],['Stock','stock_quantity','units','products_stock'],['Low Stock Alert','low_stock_threshold','units','products_low_alert'],['SKU','sku','','products_sku']] as [$label,$key,$unit,$labelKey])
                 <div class="d-flex justify-content-between mb-2" style="font-size:13px">
                     <span style="color:var(--text-muted)" data-i18n="{{ $labelKey }}">{{ $label }}</span>
-                    <span style="font-weight:600">{{ number_format($product->$key) }} {{ $unit }}</span>
+                    <span style="font-weight:600">{{ $key === 'sku' ? $product->$key : number_format($product->$key) }} {{ $unit }}</span>
                 </div>
                 @endforeach
                 <div class="d-flex justify-content-between mb-2" style="font-size:13px">
